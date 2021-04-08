@@ -11,22 +11,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class Enumeration implements Inferencer {
-    @Override
-    public Distribution query(RandomVariable X, Assignment e, BayesianNetwork network) {
+import java.io.*;
+import java.util.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+import bn.parser.XMLBIFParser;
+
+public class Enumeration{
+    public static Distribution query(RandomVariable X, Assignment e, BayesianNetwork network) {
         List<RandomVariable> vars = network.getVariablesSortedTopologically();
         Distribution Qx = new Distribution(X);
         for (Value x : X.getDomain()) {
             Assignment ex = e.copy();
             ex.putIfAbsent(X, x);
-            Qx.set(x, enumerate_all(new ArrayList<>(vars), ex, network));
+            Qx.set(x, enumerate_all(new ArrayList<>(vars), ex, network)); // null pointer error here.
         }
         Qx.normalize();
         return Qx;
 
 
     }
-    private double enumerate_all(List<RandomVariable> vars, Assignment e, BayesianNetwork network){
+    private  static double enumerate_all(List<RandomVariable> vars, Assignment e, BayesianNetwork network){
         if(vars.isEmpty()){
             return 1.0;
         }
@@ -43,6 +49,19 @@ public class Enumeration implements Inferencer {
             }
             return sum_porb;
         }
+    }
+    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
+        String filename = "src/bn/examples/aima-alarm.xml";
+		if (args.length > 0) {
+			filename = args[0];
+		}
+		XMLBIFParser parser = new XMLBIFParser();
+		BayesianNetwork network = parser.readNetworkFromFile(filename);
+        RandomVariable rv1 = network.getVariableByName("E");
+        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+        RandomVariable rv2 = network.getVariableByName("A");
+        Distribution dist = query(rv2, ass, network);
+        System.out.println(dist);
     }
 }
 
