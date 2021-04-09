@@ -44,8 +44,12 @@ public class Enumeration{
             double sum_porb = 0;
             for (Value v : V.getDomain()) {
                 Assignment ev = e.copy();
-                ev.putIfAbsent(V, v);
-                sum_porb += network.getProbability(V,e) * enumerate_all(new ArrayList<>(vars), ev, network);
+                ev.putIfAbsent(V, v); // ?
+                // System.out.println("V is " + V);
+                // System.out.println("e is " + e);
+                // System.out.println(V.cpt.get(value, e));
+                double ya = network.getProbability(V, ev);
+                sum_porb += ya * enumerate_all(new ArrayList<>(vars), ev, network);
             }
             return sum_porb;
         }
@@ -58,8 +62,11 @@ public class Enumeration{
 		XMLBIFParser parser = new XMLBIFParser();
 		BayesianNetwork network = parser.readNetworkFromFile(filename);
         RandomVariable rv1 = network.getVariableByName("E");
+        // System.out.println("rv1 " +  rv1);
         Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+        // System.out.println("ass " + ass);
         RandomVariable rv2 = network.getVariableByName("A");
+        // System.out.println("rv2 " + rv2);
         Distribution dist = query(rv2, ass, network);
         System.out.println(dist);
     }
