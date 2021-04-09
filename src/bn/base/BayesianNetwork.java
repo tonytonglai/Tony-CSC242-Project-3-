@@ -200,6 +200,8 @@ public class BayesianNetwork implements bn.core.BayesianNetwork, Cloneable {
 		//trace("BayesianNetwork.getProb: for variable " + X + ", e=" + e);
 		Node node = getNodeForVariable(X);
 		Value value = e.get(X);
+		// System.out.println("value: " + value); // TODO: DELETE
+		// System.out.println("e: " + e); // TODO: DELETE
 		double result = node.cpt.get(value, e);
 		//trace("BayesianNetwork.getProb: result=" + result);
 		return result;

@@ -9,12 +9,20 @@ import bn.core.Assignment;
 import bn.core.BayesianNetwork;
 import bn.core.Distribution;
 import bn.core.Value;
+import bn.parser.XMLBIFParser;
 
 import java.util.List;
 
-public class RejectionSampling implements Inferencer {
+import java.io.*;
+import java.util.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
+import bn.parser.XMLBIFParser;
 
-    public Distribution query(RandomVariable X, Assignment e, BayesianNetwork network, int N) {
+public class RejectionSampling {
+
+    public static Distribution query(RandomVariable X, Assignment e, BayesianNetwork network, int N) {
         Distribution C = new bn.base.Distribution(X);
         for(Value v: X.getDomain()){
             C.set(v,1);
@@ -45,8 +53,25 @@ public class RejectionSampling implements Inferencer {
         return C;
     }
 
-    @Override
-    public Distribution query(RandomVariable X, Assignment e, BayesianNetwork network) {
-        return null;
+    // @Override
+    // public Distribution query(RandomVariable X, Assignment e, BayesianNetwork network) {
+    //     return null;
+    // }
+
+    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
+        String filename = "src/bn/examples/aima-alarm.xml";
+		if (args.length > 0) {
+			filename = args[0];
+		}
+		XMLBIFParser parser = new XMLBIFParser();
+		BayesianNetwork network = parser.readNetworkFromFile(filename);
+        RandomVariable rv1 = network.getVariableByName("E");
+        // System.out.println("rv1 " +  rv1);
+        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+        // System.out.println("ass " + ass);
+        RandomVariable rv2 = network.getVariableByName("A");
+        // System.out.println("rv2 " + rv2);
+        Distribution dist = query(rv2, ass, network, 1000000);
+        System.out.println(dist);
     }
 }
