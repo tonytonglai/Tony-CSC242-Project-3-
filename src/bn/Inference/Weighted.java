@@ -10,7 +10,7 @@ import bn.core.BayesianNetwork;
 import bn.core.Distribution;
 import bn.core.Value;
 import bn.parser.XMLBIFParser;
-import jdk.internal.event.Event;
+// import jdk.internal.event.Event;
 
 import java.util.List;
 
