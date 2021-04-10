@@ -14,7 +14,6 @@ import java.util.Set;
 import java.io.*;
 import java.util.*;
 import javax.xml.parsers.*;
-import org.w3c.dom.*;
 import org.xml.sax.*;
 import bn.parser.XMLBIFParser;
 
@@ -63,7 +62,10 @@ public class Enumeration{
 		BayesianNetwork network = parser.readNetworkFromFile(filename);
         RandomVariable rv1 = network.getVariableByName("E");
         // System.out.println("rv1 " +  rv1);
-        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+
+        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next()); // TODO: UNCOMMENT 
+
+        // Assignment ass = new bn.base.Assignment(rv1, tru); //TODO: DELETE ONCE DONE TESTING
         // System.out.println("ass " + ass);
         RandomVariable rv2 = network.getVariableByName("A");
         // System.out.println("rv2 " + rv2);

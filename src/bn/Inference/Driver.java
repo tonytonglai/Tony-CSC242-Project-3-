@@ -1,10 +1,20 @@
 package bn.Inference;
 
+
+import bn.core.*;
+import bn.base.*;
+import bn.core.Assignment;
+import bn.core.BayesianNetwork;
+import bn.core.Distribution;
+import bn.core.Value;
+import bn.parser.XMLBIFParser;
+
 import java.io.Console;
 import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import org.xml.sax.*;
 
 public class Driver {
     
@@ -13,7 +23,8 @@ public class Driver {
 
     //for wet grass AIMA example...
     // java -cp "./bin" MyBNInferencer aima-wet-grass.xml R S true
-    public static void main(String args[]) throws IOException, ParserConfigurationException {
+    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
+
         // Console c = System.console();
         // String answer = c.readLine("Enter your answer: ");
         // System.out.print(answer);
@@ -30,12 +41,23 @@ public class Driver {
         // if something like $... R S true B will flag false, since there isn't a boolean value specified for instantiation?
         // also, does instantiation mean that it will ALWAYS be true? In that case, what gives?
 
+        /*
         try {
             String inferencer = args[0];
             String filename = args[1];
-    
-            // specify beyond args[1]... args[0] and args[1] are always fixed...
-            for (int i = 2; i < args.length; i++) {
+            String queryVar = args[2];
+            XMLBIFParser parser = new XMLBIFParser();
+            BayesianNetwork network = parser.readNetworkFromFile(filename);
+
+            // for inferencer, we can actually just import ALL package statements, and have an ugly if-else/case switch conditional to just call the relevant query, but
+            // I feel like it's kind of overkill...
+                // but it might be easier?
+            // the alternative would be to try and pull the relevant query once we reach that class, and I have _no idea_ how I'd go about doing that.
+
+            // specify beyond args[2]... args[0], args[1], args[2] are always fixed...
+            // this gets us the relevant assignment variables that we want to assign. Rest are unobserved variables.
+
+            for (int i = 3; i < args.length; i += 2) {
                 System.out.println(args[i]);
             }
 
@@ -45,8 +67,20 @@ public class Driver {
                 System.out.println("Didn't supply enough arguments.");
             }
         }
+        */
 
         
+
+        // try it without command line first, so I can circumvent having to compile first...
+
+        // assume arguments are still passed in as an array...
+        String[] input = {}; // TODO: MODIFY AS NECESSARY
+        String inferencer = input[0];
+        String filename = input[1];
+        String queryVarLetter = input[2];
+        XMLBIFParser parser = new XMLBIFParser();
+        BayesianNetwork network = parser.readNetworkFromFile(filename);
+        RandomVariable queryVar = network.getVariableByName(queryVarLetter);
         
     }
 }
