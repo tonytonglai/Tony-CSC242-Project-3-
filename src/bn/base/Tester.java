@@ -33,6 +33,7 @@ public class Tester {
 			filename = args[0];
 		}
         */
+        test_alarm();
         test_grass();
 
     }
