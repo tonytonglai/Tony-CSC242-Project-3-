@@ -116,6 +116,27 @@ public class Driver2 {
 
         Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
         System.out.println("Gibbs Result: "+dist);
+
+        switch (inferencer.toLowerCase()){
+            case "gibbs":
+                dist = Gibbs.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Gibbs Result: "+dist);
+                break;
+            case "enumeration":
+                dist = Enumeration.query(queryVar, ass.copy(), network);
+                System.out.println("Enumeration Result: "+dist);
+                break;
+            case "rejection":
+                dist = RejectionSampling.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Enumeration Result: "+dist);
+            break;
+            case "weighted":
+                dist = Weighted.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Enumeration Result: "+dist);
+            break;
+            default:
+            System.out.println("no such inferencer");
+        }
         
     }
 }

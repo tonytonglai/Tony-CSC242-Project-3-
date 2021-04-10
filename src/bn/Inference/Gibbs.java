@@ -28,7 +28,7 @@ public class Gibbs {
         */
         Distribution C = new bn.base.Distribution(X);
         for(Value v: X.getDomain()){
-            C.set(v,1);
+            C.set(v,0);
         }
 
         List<RandomVariable> vars = network.getVariablesSortedTopologically();
