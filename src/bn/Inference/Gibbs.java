@@ -44,7 +44,7 @@ public class Gibbs {
             //System.out.println("rnadom num  "+(int) (Math.random()*Z.size()));
 
             RandomVariable update_var = Z.get((int) (Math.random()*Z.size()));
-            //System.out.println("RV "+update_var.toString());
+            System.out.println("RV "+update_var.toString());
 
             assignValue(update_var, e, network);
             Value result_val = e.get(X);
