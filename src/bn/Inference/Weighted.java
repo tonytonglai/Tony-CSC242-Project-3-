@@ -76,10 +76,7 @@ public class Weighted {
                 }
             }
         }
-
-        Tuple2 tuple = new Tuple2 (x, w);
-        return tuple;
-
+        return new Tuple2(x,w);
     }
 
     public static void WeightedMethod(int samples, String filename, String[] randomVar) {
