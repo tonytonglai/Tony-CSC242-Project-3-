@@ -28,6 +28,7 @@ public class RejectionSampling {
             C.set(v,1);
         }
         List<RandomVariable> vars = network.getVariablesSortedTopologically();
+    
         for(int j=0;j<N;j++){
             Assignment x = new bn.base.Assignment();
             for(RandomVariable rv: vars){
