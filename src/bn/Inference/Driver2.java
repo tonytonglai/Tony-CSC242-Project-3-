@@ -78,7 +78,7 @@ public class Driver2 {
         
         // aima-alarm.xml, query variable B, J true M true
         // java -cp "./bin" MYBNInferencer aima-alarm.xml B J true M true
-        String[] input = {"inferencer", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        String[] input = {"gibbs", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
         String inferencer = input[0]; //TODO: Presently redundant. Figure out how to invoke a specific class' query...
         String filename = input[1];
         String queryVarLetter;
@@ -103,6 +103,7 @@ public class Driver2 {
         
         int argLengthDiff = input.length - fixedLength;
         System.out.println(argLengthDiff);
+        Assignment ass;
 
         if (argLengthDiff % 2 == 1) { // if it's odd...
             System.out.println("Not valid");
@@ -111,36 +112,52 @@ public class Driver2 {
         if (argLengthDiff / 2 == 1) {
             RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
             Value v1 = new bn.base.Value(input[fixedLength+1]);
-            Assignment ass = new bn.base.Assignment(rv1, v1);
+            ass = new bn.base.Assignment(rv1, v1);
             Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
+            //System.out.println("Gibbs Result: "+dist);
 
         } else if (argLengthDiff / 2 == 2) {
             RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
             Value v1 = new bn.base.Value(input[fixedLength + 1]);
             RandomVariable rv2 = network.getVariableByName(input[fixedLength + 2]);
             Value v2 = new bn.base.Value(input[fixedLength + 3]);
-            Assignment ass = new bn.base.Assignment(rv1, v1, rv2, v2);
+             ass = new bn.base.Assignment(rv1, v1, rv2, v2);
             Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
+            //System.out.println("Gibbs Result: "+dist);
         
-        } else if (argLengthDiff / 2 == 3) {
+        } else  {
             RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
             Value v1 = new bn.base.Value(input[fixedLength + 1]);
             RandomVariable rv2 = network.getVariableByName(input[fixedLength + 2]);
             Value v2 = new bn.base.Value(input[fixedLength + 3]);
             RandomVariable rv3 = network.getVariableByName(input[fixedLength + 4]);
             Value v3 = new bn.base.Value(input[fixedLength + 5]);
-            Assignment ass = new bn.base.Assignment(rv1, v1, rv2, v2, rv3, v3);
+             ass = new bn.base.Assignment(rv1, v1, rv2, v2, rv3, v3);
             Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
+            //System.out.println("Gibbs Result: "+dist);
         }
+        Distribution dist;
 
-        
-        // for (int i = 3; i < args.length; i += 2) {
-        //     RandomVariable rv = network.getVariableByName(args[i]);
-        //     Value v = new bn.base.Value(args[i + 1]);
-        // }
+        switch (inferencer.toLowerCase()){
+            case "gibbs":
+                dist = Gibbs.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Gibbs Result: "+dist);
+                break;
+            case "enumeration":
+                dist = Enumeration.query(queryVar, ass.copy(), network);
+                System.out.println("Enumeration Result: "+dist);
+                break;
+            case "rejection":
+                dist = RejectionSampling.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Enumeration Result: "+dist);
+            break;
+            case "weighted":
+                dist = Weighted.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Enumeration Result: "+dist);
+            break;
+            default:
+            System.out.println("no such inferencer");
+        }
         
     }
 }
