@@ -23,7 +23,7 @@ import bn.parser.XMLBIFParser;
 
 
 public class Weighted {
-    public class Tuple2 {
+    public static class Tuple2 {
 
         Assignment first;
         Double second;
@@ -34,7 +34,7 @@ public class Weighted {
         }
     }
 
-    public static Distribution Likelihood (RandomVariable X, Assignment e, BayesianNetwork network, int N) {
+    public static Distribution query (RandomVariable X, Assignment e, BayesianNetwork network, int N) {
     
         Distribution W = new bn.base.Distribution(X); //Get the distribution of X vector of weighted counts for each valye of X  
         for (Value v: X.getDomain()){  //Assign 0.0 to all the values in W
@@ -80,6 +80,22 @@ public class Weighted {
         Tuple2 tuple = new Tuple2 (x, w);
         return tuple;
 
+    }
+    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
+        String filename = "src/bn/examples/aima-alarm.xml";
+		if (args.length > 0) {
+			filename = args[0];
+		}
+		XMLBIFParser parser = new XMLBIFParser();
+		BayesianNetwork network = parser.readNetworkFromFile(filename);
+        RandomVariable rv1 = network.getVariableByName("E");
+        // System.out.println("rv1 " +  rv1);
+        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+        // System.out.println("ass " + ass);
+        RandomVariable rv2 = network.getVariableByName("A");
+        // System.out.println("rv2 " + rv2);
+        Distribution dist = query(rv2, ass, network, 1000000);
+        System.out.println(dist);
     }
 
 }
