@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import org.xml.sax.*;
 
-public class Driver {
+public class Driver2 {
     
     // aima-alarm.xml, query variable B, J true M true
     // java -cp "./bin" MYBNInferencer aima-alarm.xml B J true M true
