@@ -78,8 +78,8 @@ public class Driver2 {
         
         // aima-alarm.xml, query variable B, J true M true
         // java -cp "./bin" MYBNInferencer aima-alarm.xml B J true M true
-        String[] input = {"gibbs", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
-        String inferencer = input[0]; //TODO: Presently redundant. Figure out how to invoke a specific class' query...
+        String[] input = {"enumeration", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        String inferencer = input[0];
         String filename = input[1];
         String queryVarLetter;
         int fixedLength;
@@ -114,8 +114,7 @@ public class Driver2 {
             ass.put(rv, v);
         }
 
-        Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-        System.out.println("Gibbs Result: "+dist);
+        Distribution dist;
 
         switch (inferencer.toLowerCase()){
             case "gibbs":
@@ -128,14 +127,14 @@ public class Driver2 {
                 break;
             case "rejection":
                 dist = RejectionSampling.query(queryVar, ass.copy(), network, trials);
-                System.out.println("Enumeration Result: "+dist);
+                System.out.println("Rejection Sampling Result: "+dist);
             break;
             case "weighted":
                 dist = Weighted.query(queryVar, ass.copy(), network, trials);
-                System.out.println("Enumeration Result: "+dist);
+                System.out.println("Weighted Sampling Result: "+dist);
             break;
             default:
-            System.out.println("no such inferencer");
+            System.out.println("No such inferencer exists");
         }
         
     }
