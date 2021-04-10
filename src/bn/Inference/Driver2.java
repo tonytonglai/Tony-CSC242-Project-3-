@@ -97,50 +97,25 @@ public class Driver2 {
         XMLBIFParser parser = new XMLBIFParser();
         BayesianNetwork network = parser.readNetworkFromFile(filename);
         RandomVariable queryVar = network.getVariableByName(queryVarLetter);
-
+        Assignment ass = new bn.base.Assignment();
         // get length between args.length - 3...
             // it should be an even number
         
-        int argLengthDiff = input.length - fixedLength;
+        int argLengthDiff = input.length - fixedLength;     
         System.out.println(argLengthDiff);
 
         if (argLengthDiff % 2 == 1) { // if it's odd...
             System.out.println("Not valid");
         }
 
-        if (argLengthDiff / 2 == 1) {
-            RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
-            Value v1 = new bn.base.Value(input[fixedLength+1]);
-            Assignment ass = new bn.base.Assignment(rv1, v1);
-            Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
-
-        } else if (argLengthDiff / 2 == 2) {
-            RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
-            Value v1 = new bn.base.Value(input[fixedLength + 1]);
-            RandomVariable rv2 = network.getVariableByName(input[fixedLength + 2]);
-            Value v2 = new bn.base.Value(input[fixedLength + 3]);
-            Assignment ass = new bn.base.Assignment(rv1, v1, rv2, v2);
-            Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
-        
-        } else if (argLengthDiff / 2 == 3) {
-            RandomVariable rv1 = network.getVariableByName(input[fixedLength]);
-            Value v1 = new bn.base.Value(input[fixedLength + 1]);
-            RandomVariable rv2 = network.getVariableByName(input[fixedLength + 2]);
-            Value v2 = new bn.base.Value(input[fixedLength + 3]);
-            RandomVariable rv3 = network.getVariableByName(input[fixedLength + 4]);
-            Value v3 = new bn.base.Value(input[fixedLength + 5]);
-            Assignment ass = new bn.base.Assignment(rv1, v1, rv2, v2, rv3, v3);
-            Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
-            System.out.println("Gibbs Result: "+dist);
+        for (int i = fixedLength; i < input.length; i += 2) {
+            RandomVariable rv = network.getVariableByName(input[i]);
+            Value v = new bn.base.Value(input[i + 1]);
+            ass.put(rv, v);
         }
 
-        
-        // for (int i = 3; i < args.length; i += 2) {
-        //     RandomVariable rv = network.getVariableByName(args[i]);
-        //     Value v = new bn.base.Value(args[i + 1]);
-        // }
+        Distribution dist = Gibbs.query(queryVar, ass.copy(), network, trials);
+        System.out.println("Gibbs Result: "+dist);
         
     }
 }
