@@ -81,6 +81,15 @@ public class Weighted {
         return tuple;
 
     }
+
+    public static void WeightedMethod(int samples, String filename, String[] randomVar) {
+        System.out.println("Yeah");
+    }
+
+    public static void printMe(){
+        System.out.println("Yeah");
+    }
+
     public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
         String filename = "src/bn/examples/aima-alarm.xml";
 		if (args.length > 0) {
