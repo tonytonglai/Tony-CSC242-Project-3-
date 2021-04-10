@@ -41,7 +41,7 @@ public class Tester {
 		BayesianNetwork network = parser.readNetworkFromFile(filename);
 
         RandomVariable rv1 = network.getVariableByName("E");
-        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next());
+        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().);
         RandomVariable rv2 = network.getVariableByName("A");
         Distribution dist = Enumeration.query(rv2, ass, network);
         System.out.println("Enumeration Result: "+dist);
@@ -50,10 +50,12 @@ public class Tester {
         System.out.println("Gibbs Result: "+dist);
 
         dist = RejectionSampling.query(rv2, ass, network, 1000000);
-        System.out.println("Gibbs Result: "+dist);
+        System.out.println("Rejection Result: "+dist);
 
         dist = Weighted.query(rv2, ass, network, 1000000);
-        System.out.println("Gibbs Result: "+dist);
+        System.out.println("Weighted Result: %dist "+dist);
+
+
 
 
     }
