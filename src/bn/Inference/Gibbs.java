@@ -45,12 +45,15 @@ public class Gibbs {
 
             RandomVariable update_var = Z.get((int) (Math.random()*Z.size()));
             //System.out.println("RV "+update_var.toString());
+            //System.out.println("RV "+ e.get(update_var));
+
+
 
             assignValue(update_var, e, network);
             Value result_val = e.get(X);
             double updated_prob = C.get(result_val)+1;
             C.set(result_val,updated_prob);
-            }
+        }
         C.normalize();
         return C;
     }

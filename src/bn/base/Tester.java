@@ -33,8 +33,9 @@ public class Tester {
 			filename = args[0];
 		}
         */
-        test_alarm();
-        test_grass();
+       // test_alarm();
+        //test_grass();
+        test_grass_2();
 
     }
     private static void test_alarm() throws IOException, ParserConfigurationException, SAXException{
@@ -80,7 +81,36 @@ public class Tester {
         Value v1 = new bn.base.Value(inputVal1);
         //Value v2 = new bn.base.Value(inputVal2);
         Assignment ass = new bn.base.Assignment(rv1, v1);
-        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 10);
+        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 1000);
+        System.out.println("Gibbs Result: "+dist);
+
+        dist = RejectionSampling.query(queryRV, ass.copy(), network, 1000000);
+        System.out.println("Rejection Result: "+dist);
+
+        dist = Weighted.query(queryRV, ass.copy(), network, 1000000);
+        System.out.println("Weighted Result: "+dist);
+
+        dist = Enumeration.query(queryRV, ass.copy(), network);
+        System.out.println("Enumeration Result: "+dist);
+
+    }
+
+    private static void test_grass_2() throws IOException, ParserConfigurationException, SAXException{
+        String filename = "src/bn/examples/aima-wet-grass.xml";
+        XMLBIFParser parser = new XMLBIFParser();
+		BayesianNetwork network = parser.readNetworkFromFile(filename);
+
+        RandomVariable rv1 = network.getVariableByName("S");
+        //RandomVariable rv2 = network.getVariableByName("M");
+        RandomVariable queryRV = network.getVariableByName("R");
+
+
+        String inputVal1 = "true";
+        //String inputVal2 = "true";
+        Value v1 = new bn.base.Value(inputVal1);
+        //Value v2 = new bn.base.Value(inputVal2);
+        Assignment ass = new bn.base.Assignment(rv1, v1);
+        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 1000);
         System.out.println("Gibbs Result: "+dist);
 
         dist = RejectionSampling.query(queryRV, ass.copy(), network, 1000000);

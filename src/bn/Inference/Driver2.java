@@ -78,7 +78,7 @@ public class Driver2 {
         
         // aima-alarm.xml, query variable B, J true M true
         // java -cp "./bin" MYBNInferencer aima-alarm.xml B J true M true
-        String[] input = {"inferencer", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        String[] input = {"gibbs", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
         String inferencer = input[0]; //TODO: Presently redundant. Figure out how to invoke a specific class' query...
         String filename = input[1];
         String queryVarLetter;
