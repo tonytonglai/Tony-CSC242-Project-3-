@@ -21,7 +21,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import bn.parser.XMLBIFParser;
 
-public class Gibbs {
+public class MH {
 
     public static Distribution query(RandomVariable X, Assignment e, BayesianNetwork network, int N) {
         /*
@@ -34,6 +34,7 @@ public class Gibbs {
         List<RandomVariable> vars = network.getVariablesSortedTopologically();
         ArrayList<RandomVariable> Z = new ArrayList<>();
 
+
         for(RandomVariable rv: vars){
             if(!e.containsKey(rv)){
                 assignValue(rv, e, network);
@@ -41,10 +42,18 @@ public class Gibbs {
             }
         }
         for(int j=0;j<N;j++){
-            //System.out.println("rnadom num  "+(int) (Math.random()*Z.size()));
-
             RandomVariable update_var = Z.get((int) (Math.random()*Z.size()));
-            //System.out.println("RV "+update_var.toString());
+            Value current_val = e.get(update_var);
+            double pi_x = network.getProbability(update_var,e);
+            assignValue(update_var, e, network);
+            Value new_val = e.get(update_var);
+            double pi_prime_x = network.getProbability(update_var,e);
+            double ran = Math.random();
+            if(ran > Math.min(1,pi_prime_x/pi_x)){
+                e.put(update_var,current_val);
+            }
+
+
 
             assignValue(update_var, e, network);
             Value result_val = e.get(X);
@@ -92,7 +101,7 @@ public class Gibbs {
         // System.out.println("ass " + ass);
         RandomVariable rv2 = network.getVariableByName("A");
         // System.out.println("rv2 " + rv2);
-        Distribution dist = query(rv2, ass, network, 10000);
+        Distribution dist = query(rv2, ass, network, 100);
         System.out.println(dist);
     }
 }
