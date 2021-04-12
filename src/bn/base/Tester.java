@@ -1,127 +1,88 @@
 package bn.base;
 
-import bn.core.RandomVariable;
-
-
-
-import bn.base.Domain;
 import bn.core.*;
 import bn.base.*;
-import bn.Inference.*;
-import bn.Inference.Enumeration;
 import bn.core.Assignment;
 import bn.core.BayesianNetwork;
 import bn.core.Distribution;
 import bn.core.Value;
 import bn.parser.XMLBIFParser;
-// import jdk.internal.event.Event;
-import jdk.javadoc.internal.doclets.formats.html.SourceToHTMLConverter;
 
-import java.util.List;
+import java.io.Console;
+import java.util.Arrays;
+import java.util.Random;
 
-import java.io.*;
-import java.util.*;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import org.xml.sax.*;
-import bn.parser.XMLBIFParser;
 
+// TODO: REFACTOR ALL INSTANCES OF input[i] to args[i]
 public class Tester {
-    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
-        
-		/*if (args.length > 0) {
-			filename = args[0];
-		}
-        */
-       // test_alarm();
-        //test_grass();
-        test_grass_2();
-
-    }
-    private static void test_alarm() throws IOException, ParserConfigurationException, SAXException{
-        String filename = "src/bn/examples/aima-alarm.xml";
-        XMLBIFParser parser = new XMLBIFParser();
-		BayesianNetwork network = parser.readNetworkFromFile(filename);
-
-        RandomVariable rv1 = network.getVariableByName("J");
-        RandomVariable rv2 = network.getVariableByName("M");
-        RandomVariable queryRV = network.getVariableByName("B");
-
-
-        String inputVal1 = "true";
-        String inputVal2 = "true";
-        Value v1 = new bn.base.Value(inputVal1);
-        Value v2 = new bn.base.Value(inputVal2);
-        Assignment ass = new bn.base.Assignment(rv1, v1,rv2,v2);
-        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Gibbs Result: "+dist);
-
-        dist = RejectionSampling.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Rejection Result: "+dist);
-
-        dist = Weighted.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Weighted Result: "+dist);
-
-        dist = Enumeration.query(queryRV, ass.copy(), network);
-        System.out.println("Enumeration Result: "+dist);
-
-    }
-    private static void test_grass() throws IOException, ParserConfigurationException, SAXException{
-        String filename = "src/bn/examples/aima-wet-grass.xml";
-        XMLBIFParser parser = new XMLBIFParser();
-		BayesianNetwork network = parser.readNetworkFromFile(filename);
-
-        RandomVariable rv1 = network.getVariableByName("S");
-        //RandomVariable rv2 = network.getVariableByName("M");
-        RandomVariable queryRV = network.getVariableByName("R");
-
-
-        String inputVal1 = "true";
-        //String inputVal2 = "true";
-        Value v1 = new bn.base.Value(inputVal1);
-        //Value v2 = new bn.base.Value(inputVal2);
-        Assignment ass = new bn.base.Assignment(rv1, v1);
-        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 1000);
-        System.out.println("Gibbs Result: "+dist);
-
-        dist = RejectionSampling.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Rejection Result: "+dist);
-
-        dist = Weighted.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Weighted Result: "+dist);
-
-        dist = Enumeration.query(queryRV, ass.copy(), network);
-        System.out.println("Enumeration Result: "+dist);
-
-    }
-
-    private static void test_grass_2() throws IOException, ParserConfigurationException, SAXException{
-        String filename = "src/bn/examples/aima-wet-grass.xml";
-        XMLBIFParser parser = new XMLBIFParser();
-		BayesianNetwork network = parser.readNetworkFromFile(filename);
-
-        RandomVariable rv1 = network.getVariableByName("S");
-        //RandomVariable rv2 = network.getVariableByName("M");
-        RandomVariable queryRV = network.getVariableByName("R");
-
-
-        String inputVal1 = "true";
-        //String inputVal2 = "true";
-        Value v1 = new bn.base.Value(inputVal1);
-        //Value v2 = new bn.base.Value(inputVal2);
-        Assignment ass = new bn.base.Assignment(rv1, v1);
-        Distribution dist = Gibbs.query(queryRV, ass.copy(), network, 1000);
-        System.out.println("Gibbs Result: "+dist);
-
-        dist = RejectionSampling.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Rejection Result: "+dist);
-
-        dist = Weighted.query(queryRV, ass.copy(), network, 1000000);
-        System.out.println("Weighted Result: "+dist);
-
-        dist = Enumeration.query(queryRV, ass.copy(), network);
-        System.out.println("Enumeration Result: "+dist);
-
-    }
     
+    // aima-alarm.xml, query variable B, J true M true
+    // java -cp "./bin" MYBNInferencer aima-alarm.xml B J true M true
+
+    //for wet grass AIMA example...
+    // java -cp "./bin" MyBNInferencer aima-wet-grass.xml R S true
+    public static void main(String input[]) throws IOException, ParserConfigurationException, SAXException {
+
+        //String[] input = {"enumeration", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        String inferencer = input[0];
+        String filename = input[1];
+        String queryVarLetter;
+        int fixedLength;
+        int trials = 10;
+        try {
+            Integer.parseInt(input[2]); // to see if there is a value supplied. This means that it is an approximate inferencer, in which case...
+            queryVarLetter = input[3]; // query variable is the 4th input (input[3])
+            fixedLength = 4;
+        } catch (Exception e) {
+            queryVarLetter = input[2]; // otherwise, it's the 3rd input...
+            fixedLength = 3;
+        }
+        
+        XMLBIFParser parser = new XMLBIFParser();
+        BayesianNetwork network = parser.readNetworkFromFile(filename);
+        RandomVariable queryVar = network.getVariableByName(queryVarLetter);
+        Assignment ass = new bn.base.Assignment();
+        // get length between args.length - 3...
+            // it should be an even number
+        
+        int argLengthDiff = input.length - fixedLength;     
+        System.out.println(argLengthDiff);
+
+        if (argLengthDiff % 2 == 1) { // if it's odd...
+            System.out.println("Not valid");
+        }
+
+        for (int i = fixedLength; i < input.length; i += 2) {
+            RandomVariable rv = network.getVariableByName(input[i]);
+            Value v = new bn.base.Value(input[i + 1]);
+            ass.put(rv, v);
+        }
+
+        Distribution dist;
+
+        switch (inferencer.toLowerCase()){
+            case "gibbs":
+                dist = Gibbs.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Gibbs Result: "+dist);
+                break;
+            case "enumeration":
+                dist = Enumeration.query(queryVar, ass.copy(), network);
+                System.out.println("Enumeration Result: "+dist);
+                break;
+            case "rejection":
+                dist = RejectionSampling.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Rejection Sampling Result: "+dist);
+            break;
+            case "weighted":
+                dist = Weighted.query(queryVar, ass.copy(), network, trials);
+                System.out.println("Weighted Sampling Result: "+dist);
+            break;
+            default:
+            System.out.println("No such inferencer exists");
+        }
+        
+    }
 }
