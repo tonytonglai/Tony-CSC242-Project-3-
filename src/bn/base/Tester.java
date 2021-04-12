@@ -1,6 +1,10 @@
 package bn.base;
 
 import bn.core.*;
+import bn.Inference.Enumeration;
+import bn.Inference.Gibbs;
+import bn.Inference.RejectionSampling;
+import bn.Inference.Weighted;
 import bn.base.*;
 import bn.core.Assignment;
 import bn.core.BayesianNetwork;
@@ -26,7 +30,12 @@ public class Tester {
     // java -cp "./bin" MyBNInferencer aima-wet-grass.xml R S true
     public static void main(String input[]) throws IOException, ParserConfigurationException, SAXException {
 
+
         //String[] input = {"enumeration", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        // enumeration src/bn/examples/aima-alarm.xml 100 B J true M true
+        System.out.println("I am here in  aboove try");
+        try {
+        System.out.println("I am here in try");
         String inferencer = input[0];
         String filename = input[1];
         String queryVarLetter;
@@ -69,6 +78,7 @@ public class Tester {
                 System.out.println("Gibbs Result: "+dist);
                 break;
             case "enumeration":
+                System.out.println("I am here");
                 dist = Enumeration.query(queryVar, ass.copy(), network);
                 System.out.println("Enumeration Result: "+dist);
                 break;
@@ -82,6 +92,9 @@ public class Tester {
             break;
             default:
             System.out.println("No such inferencer exists");
+        }
+        } catch (Exception e) {
+            System.out.println("Error occurred");
         }
         
     }

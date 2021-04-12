@@ -53,24 +53,54 @@ public class Enumeration{
             return sum_porb;
         }
     }
-    public static void main(String args[]) throws IOException, ParserConfigurationException, SAXException {
-        String filename = "src/bn/examples/aima-alarm.xml";
-		if (args.length > 0) {
-			filename = args[0];
-		}
-		XMLBIFParser parser = new XMLBIFParser();
-		BayesianNetwork network = parser.readNetworkFromFile(filename);
-        RandomVariable rv1 = network.getVariableByName("E");
-        // System.out.println("rv1 " +  rv1);
+    public static void main(String input[]) throws IOException, ParserConfigurationException, SAXException {
 
-        Assignment ass = new bn.base.Assignment(rv1, rv1.getDomain().iterator().next()); // TODO: UNCOMMENT 
+        //String[] input = {"enumeration", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        // enumeration src/bn/examples/aima-alarm.xml 100 B J true M true
+        try {
+            System.out.println("I am here");
+            String inferencer = input[0];
+            String filename = input[1];
+            String queryVarLetter;
+            int fixedLength;
+            int trials = 10;
+            try {
+                Integer.parseInt(input[2]); // to see if there is a value supplied. This means that it is an approximate inferencer, in which case...
+                queryVarLetter = input[3]; // query variable is the 4th input (input[3])
+                fixedLength = 4;
+            } catch (Exception e) {
+                queryVarLetter = input[2]; // otherwise, it's the 3rd input...
+                fixedLength = 3;
+            }
+            
+            XMLBIFParser parser = new XMLBIFParser();
+            BayesianNetwork network = parser.readNetworkFromFile(filename);
+            RandomVariable queryVar = network.getVariableByName(queryVarLetter);
+            Assignment ass = new bn.base.Assignment();
+            // get length between args.length - 3...
+                // it should be an even number
+            
+            int argLengthDiff = input.length - fixedLength;     
+            System.out.println(argLengthDiff);
 
-        // Assignment ass = new bn.base.Assignment(rv1, tru); //TODO: DELETE ONCE DONE TESTING
-        // System.out.println("ass " + ass);
-        RandomVariable rv2 = network.getVariableByName("A");
-        // System.out.println("rv2 " + rv2);
-        Distribution dist = query(rv2, ass, network);
-        System.out.println(dist);
+            if (argLengthDiff % 2 == 1) { // if it's odd...
+                System.out.println("Not valid");
+            }
+
+            for (int i = fixedLength; i < input.length; i += 2) {
+                RandomVariable rv = network.getVariableByName(input[i]);
+                Value v = new bn.base.Value(input[i + 1]);
+                ass.put(rv, v);
+            }
+
+            Distribution dist;
+
+            dist = Enumeration.query(queryVar, ass.copy(), network);
+            System.out.println("Enumeration Result: "+dist);
+
+        } catch (Exception e) {
+            System.out.println("Error occurred");
+        }
     }
 }
 
