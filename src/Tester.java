@@ -31,38 +31,43 @@ public class Tester {
     public static void main(String input[]) throws IOException, ParserConfigurationException, SAXException {
 
 
-        //String[] input = {"enumeration", "src/bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
+        //String[] input = {"enumeration", "bn/examples/aima-alarm.xml", "100", "B", "J", "true", "M", "true"}; // TODO: MODIFY AS NECESSARY
         // enumeration src/bn/examples/aima-alarm.xml 100 B J true M true
-        System.out.println("I am here in  aboove try");
+        //System.out.println("I am here in  aboove try");
         try {
-        System.out.println("I am here in try");
+        //System.out.println("I am here in try"+ input[1]);
+        
         String inferencer = input[0];
         String filename = input[1];
         String queryVarLetter;
         int fixedLength;
-        int trials = 10;
+        int trials = 1000;
+
         try {
-            Integer.parseInt(input[2]); // to see if there is a value supplied. This means that it is an approximate inferencer, in which case...
+           trials = Integer.parseInt(input[2]); // to see if there is a value supplied. This means that it is an approximate inferencer, in which case...
             queryVarLetter = input[3]; // query variable is the 4th input (input[3])
             fixedLength = 4;
         } catch (Exception e) {
             queryVarLetter = input[2]; // otherwise, it's the 3rd input...
             fixedLength = 3;
         }
-        
+
         XMLBIFParser parser = new XMLBIFParser();
         BayesianNetwork network = parser.readNetworkFromFile(filename);
+        //System.out.println("I am here eeee");
+
         RandomVariable queryVar = network.getVariableByName(queryVarLetter);
         Assignment ass = new bn.base.Assignment();
         // get length between args.length - 3...
             // it should be an even number
-        
+
         int argLengthDiff = input.length - fixedLength;     
         System.out.println(argLengthDiff);
 
         if (argLengthDiff % 2 == 1) { // if it's odd...
             System.out.println("Not valid");
         }
+
 
         for (int i = fixedLength; i < input.length; i += 2) {
             RandomVariable rv = network.getVariableByName(input[i]);
@@ -78,7 +83,6 @@ public class Tester {
                 System.out.println("Gibbs Result: "+dist);
                 break;
             case "enumeration":
-                System.out.println("I am here");
                 dist = Enumeration.query(queryVar, ass.copy(), network);
                 System.out.println("Enumeration Result: "+dist);
                 break;
