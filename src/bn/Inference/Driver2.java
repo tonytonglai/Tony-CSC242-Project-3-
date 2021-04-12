@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import org.xml.sax.*;
 
+// TODO: REFACTOR ALL INSTANCES OF input[i] to args[i]
 public class Driver2 {
     
     // aima-alarm.xml, query variable B, J true M true
